@@ -7,7 +7,8 @@ package systemmodellingandbuild2025137;
 import java.util.ArrayList;
 
 /**
- *
+ *  Maps menu number to the correct class (e.g., TreeMenu, AddRecordData)
+ * 
  * @author Esperanza
  * Dispatcher class that routes the selected menu option
  * to the corresponding class that implements MenuAction.
@@ -32,9 +33,9 @@ public class MenuDispatcher {
             case ADD_RECORDS:
                 action = new AddRecordData(records); // Calls AddRecordMenu class
                 break;
-            //case CREATE_TREE:
-              //  action = new TreeMenu(records); // Calls TreeMenu class
-                //break;
+            case CREATE_TREE:
+                action = new TreeMenu(records); // Calls TreeMenu class
+                break;
             case EXIT:
                 return; // Do nothing, main loop will exit
             default:

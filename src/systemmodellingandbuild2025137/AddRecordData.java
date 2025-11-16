@@ -9,6 +9,9 @@ import java.util.ArrayList;     // Used to store the list of employee records
 import java.util.Scanner;       //Used to read user input from the console
 
 /**
+ * 
+ * METHOD execute() -- Uses InputUtilities to collect validated input and adds it to the record list
+ * 
  * Handles the "Add Record" menu option.
  * Allows the user to manually enter a new employee record.
  * Adds the record to the in-memory list (ArrayList<String[]>).
@@ -28,6 +31,7 @@ public class AddRecordData implements MenuAction{
     }
 
     /**
+     *  
      * Executes the add-record action.
      * Prompts the user for each field and adds the new record to the list.
      */

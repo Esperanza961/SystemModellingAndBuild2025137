@@ -37,9 +37,9 @@ public class SortData implements MenuAction {       // Implements MenuAction int
         // STEP 1: Sort the records manually
         ArrayList<String[]> sorted = mergeSort(records);
 
-        // STEP 2: Display the first 10 sorted records
-        System.out.println("\nFirst 10 records sorted by last name:");
-        CsvUtility.displayRecords(sorted, 10);
+        // STEP 2: Display the first 20 sorted records
+        System.out.println("\nFirst 20 records sorted by last name:");
+        CsvUtility.displayRecords(sorted, 20);
     }
 
     /**

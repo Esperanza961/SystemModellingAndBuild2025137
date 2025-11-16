@@ -4,13 +4,15 @@
  */
 package inpututilities;
 
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import java.util.Arrays;                    //check if a value exists in a predefined list
+import java.util.HashSet;                   //Collection that stores unique elements
+import java.util.InputMismatchException;    //Exception thrown when Scanner receives input of the wrong type
+import java.util.Scanner;                   //prompt the user and collect their responses interactively.
 
 /**
- * HDIP Feb 2025
+ * INPUT HELPER
  * 
- * InputUtiiities
+ * InputUtiiities METHODS
  * 
  *  1) askUserForText(String) -- prompt user for text input & validate
  * 
@@ -24,7 +26,13 @@ import java.util.Scanner;
  * 
  *  6) askUserForGender (String) -- prompt user for a valid gender
  * 
- * @author kheal
+ *  7) askUserForEmail(String prompt) -- Validates email format using regex
+ * 
+ *  8) askUserForManagerType(String prompt, String[] validTypes) -- Prompts the user to choose a valid Manager Type from a predefined list.
+ * 
+ *  9) askUserForDepartment(String prompt, HashSet<String> existingDepartments) -- Prompts the user to choose a valid Department from existing ones
+ * 
+ * @author Esperanza
  */
 public class InputUtilities {
     
@@ -33,7 +41,7 @@ public class InputUtilities {
      * @param prompt is the question or prompt for the user
      * @return valid text entered by the user 
      */
-    public String askUserForText(String prompt){
+    public static String askUserForText(String prompt){
         
         Scanner myKB = new Scanner(System.in);
         String userInput;
@@ -58,7 +66,7 @@ public class InputUtilities {
      * @param prompt is the question or prompt to the user
      * @return a valid int entered by the user
      */
-    public int askUserForInt(String prompt){
+    public static int askUserForInt(String prompt){
         
         Scanner myKB = new Scanner(System.in);
         String userInput;
@@ -82,7 +90,7 @@ public class InputUtilities {
      * @param minValue the lowest value that is allowed
      * @return a valid int greater or equal to minValue 
      */
-    public int askUserForInt(String prompt, int minValue){
+    public static int askUserForInt(String prompt, int minValue){
         
         Scanner myKB = new Scanner(System.in);
         int userInput = minValue -1;  //default to a value that is definitely not allowed
@@ -110,7 +118,7 @@ public class InputUtilities {
      * @param maxValue the highest value allowed
      * @return a valid integer inside the given range
      */
-    public int askUserForInt(String prompt, int minValue, int maxValue){
+    public static int askUserForInt(String prompt, int minValue, int maxValue){
         
         Scanner myKB = new Scanner(System.in);
         int userInput = minValue -1;  //default to a value that is definitely not allowed
@@ -140,7 +148,7 @@ public class InputUtilities {
      * @return a valid double inside the given range
      */
     
-    public double askUserForDouble(String prompt, double minValue, double maxValue) {
+    public static double askUserForDouble(String prompt, double minValue, double maxValue) {
     Scanner myKB = new Scanner(System.in);
     double userInput = minValue - 1; // start with invalid value
 
@@ -166,7 +174,7 @@ public class InputUtilities {
      * @return a valid string inside the given range
      */
     
-    public String askUserForGender(String prompt) {
+    public static String askUserForGender(String prompt) {
         Scanner myKB = new Scanner(System.in);
         String userInput;
 
@@ -193,7 +201,7 @@ public class InputUtilities {
      * @return a valid string inside the format
      */
     
-    public String askUserForEmail(String prompt) {
+    public static String askUserForEmail(String prompt) {
         Scanner myKB = new Scanner(System.in);
         String userInput;
 
@@ -212,5 +220,38 @@ public class InputUtilities {
 
         } while (true);
     }
+    
+    
+    
+    /**
+    * Prompts the user to choose a valid Manager Type from a predefined list.
+    */
+   public static String askUserForManagerType(String prompt, String[] validTypes) {
+       String input;
+       do {
+           input = askUserForText(prompt);
+           input = input.substring(0, 1).toUpperCase() + input.substring(1).toLowerCase(); // Format nicely
+           if (!Arrays.asList(validTypes).contains(input)) {
+               System.out.println("Invalid Manager Type. Choose from: " + String.join(", ", validTypes));
+           }
+       } while (!Arrays.asList(validTypes).contains(input));
+       return input;
+   }
+
+   /**
+    * Prompts the user to choose a valid Department from existing ones.
+    */
+   public static String askUserForDepartment(String prompt, HashSet<String> existingDepartments) {
+       String input;
+       do {
+           input = askUserForText(prompt);
+           if (!existingDepartments.contains(input)) {
+               System.out.println("Invalid Department. Choose from: " + String.join(", ", existingDepartments));
+           }
+       } while (!existingDepartments.contains(input));
+       return input;
+   }
+
+    
     
 }

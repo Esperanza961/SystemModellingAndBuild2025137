@@ -8,7 +8,8 @@ import inpututilities.InputUtilities;       //Import your input validation class
 import java.util.ArrayList;                 //For storing records as dynamic lists
 
 /**
- *
+ *  Loads records, shows menu, and handles user input loop
+ * 
  * @author Esperanza
  */
 public class SystemModellingAndBuild2025137 {
@@ -32,9 +33,9 @@ public class SystemModellingAndBuild2025137 {
             return; // Exit early if no data
         }
 
-        // STEP 4: Show first 10 records as a preview
+        // STEP 4: Show first 20 records as a preview
         System.out.println("\n First 10 Records:");
-        CsvUtility.displayRecords(records, 10); // Show first 10 rows in table format
+        CsvUtility.displayRecords(records, 20); // Show first 20 rows in table format
 
         // STEP 5: Menu loop
         MenuOption selected;
