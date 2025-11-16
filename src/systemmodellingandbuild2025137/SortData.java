@@ -4,188 +4,127 @@
  */
 package systemmodellingandbuild2025137;
 
-import java.io.File;            // Allows us to work with files
-import java.io.FileNotFoundException;   //Handles the case where the file doesn't exist
 import java.util.ArrayList;     // Used to store a dynamic list of names
-import java.util.Comparator;    // Allows us to define custom sorting rules
-import java.util.Scanner;       // Used to read from the file
+
+
 
 /**
  *
  * @author Esperanza
  * This class handles the "Sort" menu option
+ * It sorts employee records by last name using recursive merge sort.
  */
 public class SortData implements MenuAction {       // Implements MenuAction interface for modular design
     
-    private final String filename;    // Stores the name of the file to read from
+    private ArrayList<String[]> records; // Stores the data passed from main
 
-    // Constructor: receives the filename when the class is created
-    public SortData(String filename) {      //call the string from main class
-        this.filename = filename;           //declare that file as a variable
+    /**
+     * Constructor: receives the list of records from the dispatcher
+     * @param records the employee data loaded from the file
+     */
+    public SortData(ArrayList<String[]> records) {
+        this.records = records;
     }
 
-    
-    
-    // This method is called when the user selects the "SORT" option
+    /**
+     * Executes the sort action.
+     * Sorts the records by last name and displays the first 10 sorted entries.
+     */
     @Override
     public void execute() {
-        // STEP 1: Read records from the file
-        ArrayList<String[]> records = readCsvRecords(filename);         //Each record is split into fields (columns)
+        System.out.println("Sorting records by Last Name using merge sort...");
 
-        // If no names were found, show a message and stop
-        if (records.isEmpty()) {
-            System.out.println("No records found in file.");
-            return;
-        }
+        // STEP 1: Sort the records manually
+        ArrayList<String[]> sorted = mergeSort(records);
 
-        // STEP 2: Sort by Last Name (index 1)
-        ArrayList<String[]> sorted = mergeSort(records, Comparator.comparing(row -> row[1].toLowerCase()));
-
-        // STEP 3: Display first 5 sorted entries (format)
-        //Uses printf to align columns like a table
-        System.out.println("\nSorted by Last Name (First 5):");
-        System.out.printf("%-15s %-15s %-10s %-25s %-10s %-15s %-15s %-20s %-15s%n",
-                "First Name", "Last Name", "Gender", "Email", "Salary", "Department", "Position", "Job Title", "Company");
-
-        // create a resul for the 5 first records
-        for (int i = 0; i < Math.min(5, sorted.size()); i++) {
-            String[] row = sorted.get(i);
-            System.out.printf("%-15s %-15s %-10s %-25s %-10s %-15s %-15s %-20s %-15s%n",
-                    row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8]);
-        }
-
-    }
-    
-    
-    // Reads CSV-style records from the file and returns them as a list of string arrays
-    private ArrayList<String[]> readCsvRecords(String filename) {
-        ArrayList<String[]> records = new ArrayList<>(); // Create an empty list to store records
-
-        try (Scanner scanner = new Scanner(new File(filename))) { // Try to open the file
-            if (scanner.hasNextLine()) scanner.nextLine(); // Skip the header line
-
-            // Read each line of the file
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine().trim(); // Remove leading/trailing spaces
-                if (!line.isEmpty()) { // Ignore empty lines
-                    String[] fields = line.split(",", -1); // Split line by commas into fields
-                    if (fields.length >= 9) { // Only accept rows with all 9 expected columns
-                        records.add(fields); // Add the row to the list
-                    }
-                }
-            }
-        } catch (FileNotFoundException e) {
-            // If the file doesn't exist, show an error message
-            System.out.println("File not found: " + filename);
-        }
-
-        return records; // Return the list of valid records
+        // STEP 2: Display the first 10 sorted records
+        System.out.println("\nFirst 10 records sorted by last name:");
+        CsvUtility.displayRecords(sorted, 10);
     }
 
-    
+    /**
+     * METHOD MERGESORT
+     * Recursive merge sort for String[] records.
+     * Sorts by last name (column index 1).
+     *
+     * @param list the list of records to sort
+     * @return a sorted list of records
+     */
+    private ArrayList<String[]> mergeSort(ArrayList<String[]> list) {
+        
+        if (list.size() <= 1) //base case
+            return list; //It checks whether the list is already so small that it doesn’t need sorting.
 
-    // Recursive merge sort that sorts a list of String[] using a custom comparator
-    // Lets you sort by any column (e.g., row[1] for Last Name)
-    //row[0] → First Name
-    //row[4] → Salary (it need to parse to Double)
-    //row[5] → Department
-    //row[7] → Job Title
-
-    private ArrayList<String[]> mergeSort(ArrayList<String[]> list, Comparator<String[]> comparator) {
-        if (list.size() <= 1) return list; // Base case: already sorted
-
+        // STEP 1: DIVEDE 
         int mid = list.size() / 2; // Find the midpoint
-        ArrayList<String[]> left = new ArrayList<>(list.subList(0, mid)); // Left half
-        ArrayList<String[]> right = new ArrayList<>(list.subList(mid, list.size())); // Right half
-
-        // Recursively sort both halves and merge them
-        return merge(mergeSort(left, comparator), mergeSort(right, comparator), comparator);
-    }
-
-    // Merges two subarrays of arr[].
-    // First subarray is arr[l..m]
-    // Second subarray is arr[m+1..r]
-    // so on....
-    static void merge(int arr[], int l, int m, int r){     //declare the main variables
         
-        // Calculate sizes of two subarrays to be merged
-        int n1 = m - l + 1;
-        int n2 = r - m;
+        //STEP 2: slice the list into left and right halves
+        ArrayList<String[]> left = new ArrayList<>();
+        ArrayList<String[]> right = new ArrayList<>();
 
-        // Create temp arrays
-        int L[] = new int[n1];
-        int R[] = new int[n2];
+                
+        // Copy elements into left half
+        for (int i = 0; i < mid; i++) {
+            left.add(list.get(i));
+        }   
 
-        // Copy data to temp arrays
-        for (int i = 0; i < n1; ++i)
-            L[i] = arr[l + i];
-        for (int j = 0; j < n2; ++j)
-            R[j] = arr[m + 1 + j];
+        // Copy elements into right half
+        for (int i = mid; i < list.size(); i++) {
+            right.add(list.get(i));
+        }
+        
+        // STEP3: Recursively sort both halves (mergesort inside the mergesort)
+        ArrayList<String[]> sortedLeft = mergeSort(left);
+        ArrayList<String[]> sortedRight = mergeSort(right);
 
-        // Merge the temp arrays
 
-        // Initial indices of first and second subarrays
-        int i = 0, j = 0;
+        // STEP 4: Merge the sorted halves and return the result
+        return merge(sortedLeft, sortedRight);
+       }
 
-        // Initial index of merged subarray array
-        int k = l;
-        while (i < n1 && j < n2) {
-            if (L[i] <= R[j]) {
-                arr[k] = L[i];
-                i++;
+
+    /**
+     * METHOD MERGE
+     * Merges two sorted lists into one sorted list by comparing last names.
+     * @param left the left sorted half
+     * @param right the right sorted half
+     * @return a merged and sorted list
+     */
+    private ArrayList<String[]> merge(ArrayList<String[]> left, ArrayList<String[]> right) {  //each record is string[]
+        ArrayList<String[]> result = new ArrayList<>(); // Final merged list
+        int i = 0;  //Pointer for left list
+        int j = 0; // ointer for right list
+
+        // STEP 1: Compare elements from both lists and add the one with smaller last name
+        while (i < left.size() && j < right.size()) {
+            // Extract last names from both records and convert to lowercase for consistent comparison
+            String lastNameLeft = left.get(i)[1].toLowerCase();  // row[1] = Last Name
+            String lastNameRight = right.get(j)[1].toLowerCase();
+
+            // Compare last names alphabetically
+            if (lastNameLeft.compareTo(lastNameRight) <= 0) {
+                result.add(left.get(i)); // Add from left and move pointer
+                i++; // Move pointer forward
+            } else {
+                result.add(right.get(j)); // Add from right and move pointer
+                j++; // Move pointer forward
             }
-            else {
-                arr[k] = R[j];
-                j++;
-            }
-            k++;
         }
 
-        // Copy remaining elements of L[] if any
-        while (i < n1) {
-            arr[k] = L[i];
-            i++;
-            k++;
+        // STEP 2: Add any remaining records from the left list
+        while (i < left.size()) {
+            result.add(left.get(i));
+            i++; // Move pointer forward
         }
 
-        // Copy remaining elements of R[] if any
-        while (j < n2) {
-            arr[k] = R[j];
-            j++;
-            k++;
+        // STEP 3: Add any remaining elements from right
+        while (j < right.size()) {
+            result.add(right.get(j));
+            j++; // Move pointer forward
         }
+
+        return result; // Return the merged sorted list
     }
 
-    // Main function that sorts arr[l..r] using
-    // merge()
-    static void mergeSort(int arr[], int l, int r){
-        
-        if (l < r) {
 
-            // Find the middle point
-            int m = l + (r - l) / 2;
-
-            // Sort first and second halves
-            mergeSort(arr, l, m);
-            mergeSort(arr, m + 1, r);
-
-            // Merge the sorted halves
-            merge(arr, l, m, r);
-        }
-    }
-
-    // Driver code
-    public static void main(String args[]){
-        
-        int arr[] = {38, 27, 43, 10};
-        
-        mergeSort(arr, 0, arr.length - 1);
-        
-        int n = arr.length;
-        for (int i = 0; i < n; ++i)
-            System.out.print(arr[i] + " ");
-        System.out.println();
-    }
-
-    
 }

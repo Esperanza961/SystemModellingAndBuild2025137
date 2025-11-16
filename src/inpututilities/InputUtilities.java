@@ -20,6 +20,10 @@ import java.util.Scanner;
  * 
  *  4) askUserFOrInt (String, int, int) -- prompt user for an int within a valid range
  * 
+ *  5) askUserForDouble (String prompt, double minValue, double maxValue) -- prompt user for an double within a valid range
+ * 
+ *  6) askUserForGender (String) -- prompt user for a valid gender
+ * 
  * @author kheal
  */
 public class InputUtilities {
@@ -37,13 +41,16 @@ public class InputUtilities {
         do{
             // issue prompt to user and get input
             System.out.println(prompt);
-            userInput = myKB.nextLine();
+            userInput = myKB.nextLine().trim();
             
             //keep going while input not valid text
-        }while (!userInput.matches("[a-zA-Z!.?,-]"));
+        }while (!userInput.matches("[a-zA-Z]+$"));
         
-        //input must be valid text
-        return (userInput);
+        // Format: capitalize first letter, lowercase the rest
+        String formatted = userInput.substring(0, 1).toUpperCase() + userInput.substring(1).toLowerCase();
+
+        return formatted;
+
     }
     
     /**
@@ -124,4 +131,86 @@ public class InputUtilities {
         
         return userInput; // the userInput must be inside the allowed range
     }
+    
+    /**
+     * Ask the user to enter a double within a certain range
+     * @param prompt the question or prompt for the user
+     * @param minValue the lowest value allowed
+     * @param maxValue the highest value allowed
+     * @return a valid double inside the given range
+     */
+    
+    public double askUserForDouble(String prompt, double minValue, double maxValue) {
+    Scanner myKB = new Scanner(System.in);
+    double userInput = minValue - 1; // start with invalid value
+
+        do {
+            System.out.println(prompt);
+            System.out.println("You must enter a number between " + minValue + " and " + maxValue);
+            try {
+                userInput = myKB.nextDouble();
+                myKB.nextLine(); // consume newline
+            } catch (Exception e) {
+                System.out.println(" That was not a valid number.");
+                myKB.nextLine(); // discard invalid input
+            }
+        } while (userInput < minValue || userInput > maxValue);
+
+        return userInput;
+    }
+    
+    
+    /**
+     * Ask the user to enter a gender within a certain options
+     * @param prompt the question or prompt for the user
+     * @return a valid string inside the given range
+     */
+    
+    public String askUserForGender(String prompt) {
+        Scanner myKB = new Scanner(System.in);
+        String userInput;
+
+        do {
+            System.out.println(prompt);
+            System.out.println("Please enter Male, Female, or Other:");
+            userInput = myKB.nextLine().trim().toLowerCase(); // normalize input
+
+            // Accept only "male", "female", or "other"
+            if (userInput.equals("male") || userInput.equals("female") || userInput.equals("other")) {
+                // Capitalize first letter
+                return userInput.substring(0, 1).toUpperCase() + userInput.substring(1);
+            } else {
+                System.out.println("Invalid input. Try again.");
+            }
+
+        } while (true);
+    }
+    
+    
+    /**
+     * Ask the user to enter a email within a certain options
+     * @param prompt the question or prompt for the user
+     * @return a valid string inside the format
+     */
+    
+    public String askUserForEmail(String prompt) {
+        Scanner myKB = new Scanner(System.in);
+        String userInput;
+
+        // Simple regex for basic email validation
+        String emailPattern = "^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$";
+
+        do {
+            System.out.println(prompt);
+            userInput = myKB.nextLine().trim().toLowerCase();
+
+            if (userInput.matches(emailPattern)) {
+                return userInput; // valid email
+            } else {
+                System.out.println("Invalid email format. Please try again.");
+            }
+
+        } while (true);
+    }
+    
 }

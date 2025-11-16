@@ -23,18 +23,18 @@ public class MenuDispatcher {
         MenuAction action; // Interface reference to hold the selected action
 
         switch (option) {
-            /**case SORT:
+            case SORT:
                 action = new SortData(records); // Calls SortMenu class
                 break;
             case SEARCH:
-                action = new SearchMenu(records); // Calls SearchMenu class
+                action = new SearchData(records); // Calls SearchMenu class
                 break;
             case ADD_RECORDS:
-                action = new AddRecordMenu(records); // Calls AddRecordMenu class
+                action = new AddRecordData(records); // Calls AddRecordMenu class
                 break;
-            case CREATE_TREE:
-                action = new TreeMenu(records); // Calls TreeMenu class
-                break;*/
+            //case CREATE_TREE:
+              //  action = new TreeMenu(records); // Calls TreeMenu class
+                //break;
             case EXIT:
                 return; // Do nothing, main loop will exit
             default:
@@ -42,7 +42,7 @@ public class MenuDispatcher {
                 return;
         }
 
-        //action.execute(); // Run the selected menu action
+        action.execute(); // Run the selected menu action
     }
 
 }

@@ -4,10 +4,7 @@
  */
 package systemmodellingandbuild2025137;
 
-import java.io.FileReader;                  //
-import java.util.Scanner;                   //For user input
 import inpututilities.InputUtilities;       //Import your input validation class
-import java.io.FileNotFoundException;       //To handle missing file errors
 import java.util.ArrayList;                 //For storing records as dynamic lists
 
 /**
@@ -36,13 +33,14 @@ public class SystemModellingAndBuild2025137 {
         }
 
         // STEP 4: Show first 10 records as a preview
-        System.out.println("\n📄 First 10 Records:");
+        System.out.println("\n First 10 Records:");
         CsvUtility.displayRecords(records, 10); // Show first 10 rows in table format
 
         // STEP 5: Menu loop
         MenuOption selected;
         
         do {
+            System.out.println("");
             showMenu(); // Display menu options
 
             int option = myInput.askUserForInt("Choose an option:", 1, MenuOption.values().length); // Ask user for choice
@@ -63,6 +61,7 @@ public class SystemModellingAndBuild2025137 {
     private static void showMenu() {
         
         System.out.println("""
+                           
                            **************** MENU ************
                            \t 1 \t Sort records by Last Name
                            \t 2 \t Search records by Department or Name.
