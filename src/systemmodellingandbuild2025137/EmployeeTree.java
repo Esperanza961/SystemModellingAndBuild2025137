@@ -5,171 +5,144 @@
 package systemmodellingandbuild2025137;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+
 
 /**
  * Represents the binary tree structure for employee hierarchy.
- * Uses level-order (breadth-first) insertion to ensure each node gets at most two children.
  * 
- * METHODS IN THIS CLASS
- * 
- * 1.   insert(String name, String managerType, String department): Adds a new node using level-order insertion
- * 
- * 2.   [Helper] levelOrderRec(EmployeeNode node, int level, ArrayList<ArrayList<String>> res): Recursive traversal grouped by level
- * 
- * 3.   levelOrder(): Returns a list of levels with employee info.
- * 
- * 4.   getHeight(): Calculates the height of the tree
- * 
- * 5.   [Helper] calculateHeight(): Recursively computes tree height 
- * 
- * 6.   [Helper] getNodeCount(): Counts total nodes in the tree
- * 
- * 7.   [Helper] countNodes(): Recursively counts nodes
- * 
+ * Represents the employee hierarchy as a binary tree.
+ * Uses Level Order Traversal (Breadth-First Search) for insertion and display.
+ *
+ * METHODS IN THIS CLASS:
+ *  1. insert(String name, String jobTitle, String department)
+ *     -Adds a new node using level-order insertion.
+ *
+ *  2. levelOrderRec(EmployeeNode node, int level, ArrayList<ArrayList<String>> res)
+ *     -Recursive helper for level-order traversal, grouping nodes by depth.
+ *
+ *  3. levelOrder()
+ *     -Public method that returns a list of levels with employee info.
+ *
+ *  4. getHeight()
+ *     -Calculates the height of the tree (levels from root to deepest leaf).
+ *
+ *  5. calculateHeight(EmployeeNode node)
+ *     -Recursive helper to compute height.
+ *
+ *  6. getNodeCount()
+ *     -Counts total nodes in the tree.
+ *
+ *  7. countNodes(EmployeeNode node)
+ *     -Recursive helper to count nodes.
+
  * @author Esperanza
  */
 public class EmployeeTree {
     
-    // The root node of the tree (top-level employee, calling the class)
+   /** Root of the binary tree (top of the hierarchy) */
     private EmployeeNode root;
 
-    /**
-     * Constructor initializes an empty tree.
-     */
+    /** Constructor initializes an empty tree */
     public EmployeeTree() {
         this.root = null;
     }
 
-    
     /**
      * Inserts a new employee node using level-order (breadth-first) insertion.
-     * This ensures each node gets at most two children: left first, then right.
-     * 
-     * @param name         Full name of the employee
-     * @param managerType  Position or role (e.g., Junior, Senior, Manager)
-     * @param department   Department name (e.g., Accounting, HR)
+     * Ensures each node gets at most two children: left first, then right.
+     *
+     * @param name     Full name of the employee
+     * @param jobTitle Employee's job title
      */
-    public void insert(String name, String managerType, String department) {
-        EmployeeNode newNode = new EmployeeNode(name, managerType, department);
+    public void insert(String name, String jobTitle) {
+        EmployeeNode newNode = new EmployeeNode(name, jobTitle);
 
-        // If the tree is empty, set the new node as root
+        // Case 1: Tree is empty → new node becomes root
         if (root == null) {
-            root = newNode;         //create new
+            root = newNode;
             return;
         }
 
-        // Use a queue to perform level-order insertion
-        ArrayList<EmployeeNode> queue = new ArrayList<>();
+        // Case 2: Tree is not empty → perform level-order insertion
+        Queue<EmployeeNode> queue = new LinkedList<>();
         queue.add(root);
 
-        //Level-order insertion: Used a queue to insert nodes in breadth-first order
         while (!queue.isEmpty()) {
-            EmployeeNode current = queue.remove(0); // dequeue
+            EmployeeNode current = queue.poll();
 
             // Try to insert as left child
             if (current.left == null) {
-                current.left = newNode;   //create new
+                current.left = newNode;
                 return;
             } else {
-                queue.add(current.left); // enqueue left child
+                queue.add(current.left);
             }
 
             // Try to insert as right child
             if (current.right == null) {
-                current.right = newNode; //create new
+                current.right = newNode;
                 return;
             } else {
-                queue.add(current.right); // enqueue right child
+                queue.add(current.right);
             }
         }
     }
 
-    
-    
     /**
-     * Recursive helper method to perform level-order traversal.
-     * Groups nodes by their depth level in the tree.
-     * 
-     * @param node   Current node being visited
-     * @param level  Current depth level (starting from 0)
-     * @param res    List of levels, each containing employee info strings
+     * Performs Level Order Traversal (Breadth-First Search).
+     * Groups employees by their depth level in the tree.
+     *
+     * @return List of levels, each containing employee info
      */
-    private void levelOrderRec(EmployeeNode node, int level, ArrayList<ArrayList<String>> res) {
-        if (node == null) return;
+    public List<List<String>> levelOrder() {
+        List<List<String>> result = new ArrayList<>();
+        if (root == null) return result;
 
-        // If this level doesn't exist yet, add a new list
-        if (res.size() <= level)
-            res.add(new ArrayList<>());
+        Queue<EmployeeNode> queue = new LinkedList<>();
+        queue.add(root);
 
-        // Format employee info and add to current level
-        String info = node.name + " (" + node.managerType + ", " + node.department + ")";
-        res.get(level).add(info);
+        while (!queue.isEmpty()) {
+            int levelSize = queue.size();
+            List<String> level = new ArrayList<>();
 
-        // Recur for left and right children, increasing level
-        levelOrderRec(node.left, level + 1, res);
-        levelOrderRec(node.right, level + 1, res);
+            for (int i = 0; i < levelSize; i++) {
+                EmployeeNode current = queue.poll();
+                String info = current.name + " (" + current.jobTitle + ")";
+                level.add(info);
+
+                if (current.left != null) queue.add(current.left);
+                if (current.right != null) queue.add(current.right);
+            }
+
+            result.add(level);
+        }
+        return result;
     }
 
-    
-    
-    /**
-     * Public method to perform level-order traversal.
-     * Returns a list of levels, each containing employee info.
-     * 
-     * @return List of levels with employee data
-     */
-    public ArrayList<ArrayList<String>> levelOrder() {
-        ArrayList<ArrayList<String>> res = new ArrayList<>();
-        levelOrderRec(root, 0, res);
-        return res;
-    }
-
-    
-    
-    /**
-     * Calculates the height of the tree.
-     * Height = number of levels from root to deepest leaf.
-     * 
-     * @return Tree height
-     */
+    /** Calculates the height of the tree */
     public int getHeight() {
         return calculateHeight(root);
     }
 
-    
-    
-    /**
-     * Recursive helper to calculate height.
-     * 
-     * @param node Current node
-     * @return Height from this node downward
-     */
+    /** Recursive helper to calculate height */
     private int calculateHeight(EmployeeNode node) {
         if (node == null) return 0;
         return 1 + Math.max(calculateHeight(node.left), calculateHeight(node.right));
     }
 
-    
-    
-    /**
-     * Counts the total number of nodes in the tree.
-     * 
-     * @return Total node count
-     */
+    /** Counts the total number of nodes in the tree */
     public int getNodeCount() {
         return countNodes(root);
     }
 
-    
-    /**
-     * Recursive helper to count nodes.
-     * 
-     * @param node Current node
-     * @return Number of nodes under this node
-     */
+    /** Recursive helper to count nodes */
     private int countNodes(EmployeeNode node) {
         if (node == null) return 0;
         return 1 + countNodes(node.left) + countNodes(node.right);
     }
+
 
 }

@@ -48,16 +48,51 @@ public class InputUtilities {
         
         do{
             // issue prompt to user and get input
-            System.out.println(prompt);
+            System.out.println(prompt +"");
             userInput = myKB.nextLine().trim();
             
-            //keep going while input not valid text
-        }while (!userInput.matches("[a-zA-Z]+$"));
-        
-        // Format: capitalize first letter, lowercase the rest
-        String formatted = userInput.substring(0, 1).toUpperCase() + userInput.substring(1).toLowerCase();
+            // Validation: input must not be empty
+            if (userInput.isEmpty()) {
+                System.out.println("Input cannot be empty. Please try again.");
+                System.out.println("");
+            continue; // restart loop
+            }
+            
+            // Regex validation: only letters and spaces allowed
+            // ^[A-Za-z ]+$ means:
+            // ^ = start of string
+            // [A-Za-z ]+ = one or more letters or spaces
+            // $ = end of string
+            if (!userInput.matches("^[A-Za-z ]+$")) {
+                System.out.println("Invalid input. Only letters and spaces are allowed.");
+                userInput = ""; // force loop to repeat
+            }
 
-        return formatted;
+            
+        //keep going while input is empty
+        }while (userInput.isEmpty());
+        
+        // If input is ALL CAPS (like QA, IT), keep it as is.
+        // Otherwise, capitalize the first letter of each word.
+        if (userInput.equals(userInput.toUpperCase())) {
+            return userInput; // keep acronyms intact
+        } else if (!userInput.contains(" ")) {
+        
+        // Single word → capitalize first letter only
+        return Character.toUpperCase(userInput.charAt(0)) + userInput.substring(1);
+        } else {
+            
+            // Multi-word → capitalize each word
+            String[] words = userInput.split("\\s+");
+            StringBuilder formatted = new StringBuilder();
+            
+            for (String word : words) {
+                formatted.append(Character.toUpperCase(word.charAt(0)))
+                         .append(word.substring(1)) // leave rest as typed
+                         .append(" ");
+            }
+            return formatted.toString().trim();
+        }
 
     }
     
@@ -225,6 +260,8 @@ public class InputUtilities {
     
     /**
     * Prompts the user to choose a valid Manager Type from a predefined list.
+    * @param prompt the question or prompt for the user
+    * @return a valid position
     */
    public static String askUserForManagerType(String prompt, String[] validTypes) {
        String input;
@@ -240,6 +277,8 @@ public class InputUtilities {
 
    /**
     * Prompts the user to choose a valid Department from existing ones.
+    * @param prompt the question or prompt for the user
+    * @return a valid string inside the given range
     */
    public static String askUserForDepartment(String prompt, HashSet<String> existingDepartments) {
        String input;
@@ -251,7 +290,4 @@ public class InputUtilities {
        } while (!existingDepartments.contains(input));
        return input;
    }
-
-    
-    
 }

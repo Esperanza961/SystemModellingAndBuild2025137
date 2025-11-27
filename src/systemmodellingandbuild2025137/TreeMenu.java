@@ -5,68 +5,66 @@
 package systemmodellingandbuild2025137;
 
 import java.util.ArrayList; //ger the list 
+import java.util.List;
 
 /**
- * TreeMenu is a menu action that builds and displays an employee hierarchy
- * using a binary tree. It reads from the shared applicants-form.txt data,
- * inserts the first 20 records using level-order insertion, and displays
- * the tree level by level, along with its height and total node count.
- * 
+ *  CLASS TreeMenu
+ * --------------
+ * Menu action that builds and displays the HR hierarchy tree.
+ * Reads employee data from applicants-form.txt and inserts them
+ * into the correct node based on their Job Title.
+ *
  * @author Esperanza
  */
 public class TreeMenu implements MenuAction {
     
-    // Shared list of employee records loaded from applicants-form.txt
+    //Shared list of employee records loaded from applicants-form.txt 
     private ArrayList<String[]> records;
 
-    /**
-     * Constructor receives the shared employee data.
-     * @param records the list of String[] rows from the CSV file
-     */
+    // Constructor receives the shared employee data 
     public TreeMenu(ArrayList<String[]> records) {
         this.records = records;
     }
 
-    /**
-     * Executes the tree-building and display logic.
-     * - Extracts name, manager type, and department from each record
-     * - Inserts up to 20 records into the binary tree
-     * - Displays the hierarchy using recursive level-order traversal
-     * - Prints the tree height and total number of nodes
-     */
+    // Executes the tree-building and display logic
     @Override
     public void execute() {
-        // Create a new binary tree instance
         EmployeeTree tree = new EmployeeTree();
 
         System.out.println("\n BUILDING EMPLOYEE HIERARCHY TREE...");
 
+        // Adequate order of job titles for hierarchy
+        String[] hierarchyOrder = {
+            "Head Manager", "Senior Manager", "Manager", "Assistant Manager",
+            "Team Lead", "Frontend Developer", "Backend Developer", "Full-stack Developer",
+            "Mobile Developer", "DevOps", "AI Developer", "QA",
+            "HR Specialist", "HR Analyst", "Finance Analyst", "Marketing Specialist",
+            "Client Relations Specialist", "Client Relations Coordinator",
+            "Bookkeeper", "Junior Bookkeeper", "Clerk", "Junior Clerk",
+            "Office Worker", "Desk Jockey", "White-collar Worker",
+            "Sales Clerk", "Support Clerk"
+        };
+
         int count = 0;
 
-        // Loop through the records and insert the first 20 into the tree
+        // Insert employees into the binary tree following the hierarchy order
         for (String[] row : records) {
-            if (row.length >= 7) {
-                // Extract relevant fields from the CSV row
-                String name = row[0] + " " + row[1];     // FirstName + LastName
-                String managerType = row[6];             // Position (e.g., Junior, Senior)
-                String department = row[5];              // Department (e.g., IT, HR)
+            if (row.length >= 8 && count < hierarchyOrder.length) {
+                String name = row[0] + " " + row[1];   // FirstName + LastName
+                String jobTitle = hierarchyOrder[count]; // Assign job title by order
 
-                // Insert into the binary tree
-                tree.insert(name, managerType, department);
+                tree.insert(name, jobTitle);
                 count++;
 
-                // Stop after inserting 20 records
-                if (count >= 20) break;
+                if (count >= 20) break; // limit to 20 records
             }
         }
 
-        // Perform recursive level-order traversal and group by level
-        ArrayList<ArrayList<String>> levels = tree.levelOrder();
-
-        // Display the hierarchy level by level
+        // Display hierarchy level by level
+        List<List<String>> levels = tree.levelOrder();
         System.out.println("\n EMPLOYEE HIERARCHY (Level Order):");
         int levelNum = 0;
-        for (ArrayList<String> level : levels) {
+        for (List<String> level : levels) {
             System.out.println("Level " + levelNum + ":");
             for (String info : level) {
                 System.out.println("  - " + info);

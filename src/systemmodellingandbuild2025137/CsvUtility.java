@@ -4,11 +4,9 @@
  */
 package systemmodellingandbuild2025137;
 
-import java.io.BufferedWriter;                  //to write in the file
+
 import java.io.File;                            //Used to open and read files
 import java.io.FileNotFoundException;           //Handles missing file errors
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;                     //Stores dynamic lists of records
 import java.util.Scanner;                       //Reads lines from the file
 
@@ -96,82 +94,5 @@ public class CsvUtility {
         }
     
     }
-    
-    
-    
-    /**
-     * Saves the given list of employee records to a CSV file.
-     * Each record is a String array representing one employee.
-     * 
-     * @param filename the name of the file to write to (e.g., "applicants-form.txt")
-     * @param records  the list of employee records to save
-     */
-    public static void saveRecords(String filename, ArrayList<String[]> records) {
-        try {
-            // Create a BufferedWriter to write to the file
-            BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
-
-            // Loop through each employee record
-            for (String[] row : records) {
-                // Join the fields with commas to form a CSV line
-                StringBuilder line = new StringBuilder();
-                for (int i = 0; i < row.length; i++) {
-                    line.append(row[i]);
-                    if (i < row.length - 1) {
-                        line.append(","); // Add comma between fields
-                    }
-                }
-
-                // Write the line to the file
-                writer.write(line.toString());
-                writer.newLine(); // Move to the next line
-            }
-
-            // Close the writer to save changes
-            writer.close();
-            System.out.println("Records saved successfully to " + filename);
-
-        } catch (IOException e) {
-            // Handle any file writing errors
-            System.out.println("Error saving records to file: " + e.getMessage());
-        }
-    }
-
-    /**
-    * Appends a single new employee record to the file.
-    * This preserves all existing data and adds the new line at the end.
-    * 
-    * @param filename the file to write to (e.g., "applicants-form.txt")
-    * @param newRecord the new employee record as a String array
-    */
-    
-    public static void appendRecord(String filename, String[] newRecord) {
-        try {
-            // Open the file in append mode
-            BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true));
-
-            // Build the CSV line from the array
-            StringBuilder line = new StringBuilder();
-            for (int i = 0; i < newRecord.length; i++) {
-                line.append(newRecord[i]);
-                if (i < newRecord.length - 1) {
-                    line.append(",");
-                }
-            }
-
-            // Write the new line and close the writer
-            writer.write(line.toString());
-            writer.newLine();
-            writer.close();
-
-            System.out.println("New record added to " + filename);
-
-        } catch (IOException e) {
-            System.out.println("Error appending record: " + e.getMessage());
-        }
-    }
-    
-    
-    
-    
+       
 }

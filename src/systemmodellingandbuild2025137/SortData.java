@@ -41,6 +41,12 @@ public class SortData implements MenuAction {       // Implements MenuAction int
         System.out.println("\nFirst 20 records sorted by last name:");
         CsvUtility.displayRecords(sorted, 20);
     }
+    
+    /** Public method to allow other classes to reuse the sorted list */
+    public ArrayList<String[]> getSortedRecords() {
+        return mergeSort(records);
+    }
+
 
     /**
      * METHOD MERGESORT

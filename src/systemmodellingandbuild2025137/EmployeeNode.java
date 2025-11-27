@@ -4,31 +4,43 @@
  */
 package systemmodellingandbuild2025137;
 
+import java.util.ArrayList;
+
 /**
- * Stores individual employee data for the binary tree.
- * Each node stores Name, Manager Type, and Department.
- * 
- * @author Esperanza
+ * CLASS EmployeeNode
+ * ------------------
+ * Represents a single employee in the binary tree.
+ * Each node stores:
+ *   - Employee's full name
+ *   - Job Title (e.g., Manager, Developer, Clerk)
+ *   - References to left and right child nodes
+ *
+ * Author: Esperanza
  */
 public class EmployeeNode {
-    
-    String name;        //Full name of the employee
-    String managerType; //Position (e.g., Junior, Senior, Manager)
-    String department;  //Department name
-    EmployeeNode left;  //Left child in the tree
-    EmployeeNode right; //Right child in the tree
+
+    // Full name of the employee
+    String name;
+
+    //Job Title of the employee 
+    String jobTitle;
+
+    // Left child in the binary tree 
+    EmployeeNode left;
+
+    // Right child in the binary tree 
+    EmployeeNode right;
 
     /**
      * Constructor to initialize the node with employee data.
+     * @param name     Full name of the employee
+     * @param jobTitle Employee's job title
      */
-    public EmployeeNode(String name, String managerType, String department) {
+    public EmployeeNode(String name, String jobTitle) {
         this.name = name;
-        this.managerType = managerType;
-        this.department = department;
+        this.jobTitle = jobTitle;
         this.left = null;
         this.right = null;
     }
 
-    
-    
 }

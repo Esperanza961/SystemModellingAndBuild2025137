@@ -9,119 +9,102 @@ import java.util.ArrayList;     // Used to store the list of employee records
 import java.util.Scanner;       // Used to read user input from the console
 
 /**
+ * CLASS SearchData
+ * ----------------
+ * Provides functionality to search employee records using Binary Search.
  *
- * @author Esperanza
- * This class handles the "Search" menu option.
- * It allows the user to search employee records by Last Name or Department
- * using a fully manual linear search.
- * 
- * It implements the MenuAction interface for modular design.
+ * Workflow:
+ *   1. Sort the list alphabetically by the chosen field (Last Name or Department)
+ *      using SortData (merge sort).
+ *   2. Perform a binary search to find the target employee(s).
+ *   3. Display the result clearly.
+ *
+ * Implements the MenuAction interface for modular design.
+ *
+ * Author: Esperanza
  */
 public class SearchData implements MenuAction {
 
+    /** Stores the employee records passed from the dispatcher */
+    private ArrayList<String[]> records;
 
-    private ArrayList<String[]> records; // Stores the employee records passed from the dispatcher
-
-    /**
-     * Constructor: receives the list of records from the dispatcher.
-     * @param records the employee data loaded from the file
-     */
+    /** Constructor: receives the list of records from the dispatcher */
     public SearchData(ArrayList<String[]> records) {
         this.records = records;
     }
 
-    /**
-     * Executes the search action.
-     * Prompts the user to choose a search type and enter a search term.
-     * Then performs a linear search and displays matching records.
-     */
+    /** Executes the search action */
     @Override
     public void execute() {
-        //Scanner input = new Scanner(System.in); // Create scanner for user input
-        InputUtilities myInput = new InputUtilities();  //Create input helper object
+        InputUtilities myInput = new InputUtilities();
 
         // Display search options
         System.out.println("\n SEARCH MENU");
-        System.out.println("1. Search by Last Name");
-        System.out.println("2. Search by Department");
-        System.out.print("Choose an option (1 or 2): ");
+        System.out.println("1. Search by Last Name (Binary Search)");
+        System.out.println("2. Search by Department (Binary Search)");
 
-        // Use validated input method
         int choice = myInput.askUserForInt("Choose an option (1 or 2): ", 1, 2);
-        
-        Scanner input = new Scanner(System.in); // Still needed for reading strings
 
-        // Handle user choice
+        Scanner input = new Scanner(System.in);
+
         switch (choice) {
             case 1:
-                // Prompt for last name
                 System.out.print("Enter Last Name to search: ");
-                String lastName = input.nextLine().trim();  //remove spaces
-                searchByLastName(lastName); // Call helper method
+                String lastName = input.nextLine().trim();
+                searchBinary(lastName, 1); // column 1 = Last Name
                 break;
 
             case 2:
-                // Prompt for department
                 System.out.print("Enter Department to search: ");
-                String department = input.nextLine().trim(); //remove spaces
-                searchByDepartment(department); // Call helper method
+                String department = input.nextLine().trim();
+                searchBinary(department, 5); // column 5 = Department
                 break;
 
             default:
-                // Handle invalid input
-                System.out.println(" Invalid choice. Returning to main menu.");
+                System.out.println("Invalid choice. Returning to main menu.");
         }
     }
 
     /**
-     * Searches the records by Last Name (column index 1).
-     * Performs a case-insensitive linear search.
-     * 
-     * @param target the last name to search for
+     * Generic Binary Search method for employee records.
+     * @param target the string to search for
+     * @param columnIndex the column to search (1 = Last Name, 5 = Department)
      */
-    private void searchByLastName(String target) {
-        ArrayList<String[]> matches = new ArrayList<>(); // Stores matching records
+    private void searchBinary(String target, int columnIndex) {
+        // Step 1: Sort records using SortData (merge sort)
+        SortData sorter = new SortData(records);
+        ArrayList<String[]> sortedRecords = sorter.getSortedRecords();
 
-        // Loop through each record
-        for (String[] row : records) {
-            // Compare last name (column 1) ignoring case
-            if (row[1].toLowerCase().startsWith(target.toLowerCase())) {      //Converts both values to lowercase for case-insensitive comparison
-                matches.add(row); // Add match to result list
+        // Step 2: Binary Search
+        int low = 0;
+        int high = sortedRecords.size() - 1;
+        boolean found = false;
+
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+            String midValue = sortedRecords.get(mid)[columnIndex].toLowerCase();
+            int comparison = target.toLowerCase().compareTo(midValue);
+
+            // Check if midValue starts with target
+            if (midValue.startsWith(target.toLowerCase())) {
+                System.out.println("\n Match found:");
+                ArrayList<String[]> singleRecord = new ArrayList<>();
+                singleRecord.add(sortedRecords.get(mid));
+                CsvUtility.displayRecords(singleRecord, 1);
+                found = true;
+                break;
+
+            } else if (comparison > 0) {
+                low = mid + 1; // search right half
+            } else {
+                high = mid - 1; // search left half
             }
         }
 
-        // Display results
-        if (matches.isEmpty()) {
-            System.out.println("No employee found with last name: " + target);
-        } else {
-            System.out.println("\n Matches found:");
-            CsvUtility.displayRecords(matches, matches.size()); // Show all matches
+        if (!found) {
+            System.out.println("No employee found with " +
+                (columnIndex == 1 ? "last name: " : "department: ") + target);
         }
     }
 
-    /**
-     * Searches the records by Department (column index 5).
-     * Performs a case-insensitive linear search.
-     * 
-     * @param target the department to search for
-     */
-    private void searchByDepartment(String target) {
-        ArrayList<String[]> matches = new ArrayList<>(); // Stores matching records
-
-        // Loop through each record
-        for (String[] row : records) {
-            // Compare department (column 5) ignoring case
-            if (row[5].toLowerCase().startsWith(target.toLowerCase())) {      //Converts both values to lowercase
-                matches.add(row); // Add match to result list
-            }
-        }
-
-        // Display results
-        if (matches.isEmpty()) {
-            System.out.println("No employees found in department: " + target);
-        } else {
-            System.out.println("\n Matches found:");
-            CsvUtility.displayRecords(matches, matches.size()); // Show all matches
-        }
-    }
 }
